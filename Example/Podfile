@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'CoordinatorPattern_Example' do
+  pod 'CoordinatorPattern', :path => '../'
+
+  target 'CoordinatorPattern_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
