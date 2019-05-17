@@ -10,12 +10,14 @@ import CoordinatorPattern
 
 enum LoginNavigationEvent: NavigationEvent {
     case onLogin
+    case openLogin
+    case dismissLogin
 }
 
 final class LoginCoordinator: Coordinator {
     
     private let navigationController: UINavigationController
-    private let window: UIWindow
+    private let presenterViewController: UIViewController
     
     lazy var rootViewController: ViewControllerCoordinator = {
         return LoginViewController()
@@ -25,19 +27,15 @@ final class LoginCoordinator: Coordinator {
     
     weak var parentCoordinator: Coordinator?
     
-    deinit {
-        debugPrint("LoginCoordinator \(#function)")
-    }
-    
-    init(window: UIWindow) {
-        self.window = window
+    init(presenterViewController: UIViewController) {
+        self.presenterViewController = presenterViewController
         self.navigationController = UINavigationController()
+        navigationController.setViewControllers([rootViewController], animated: false)
     }
     
     func start() {
-        self.navigationController.viewControllers = [self.rootViewController]
-        self.rootViewController.coordinator = self
-        self.window.rootViewController = self.navigationController
+        rootViewController.coordinator = self
+        presenterViewController.present(navigationController, animated: true, completion: nil)
     }
     
     func didSendNavigationEvent(event: NavigationEvent) {

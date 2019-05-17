@@ -9,21 +9,21 @@
 import UIKit
 import CoordinatorPattern
 
-class LoginViewController: ViewControllerCoordinator {
+final class LoginViewController: ViewControllerCoordinator {
     
     weak var coordinator: Coordinator?
     
     lazy var loginButton: UIButton = {
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Login", for: .normal)
-        button.addTarget(self, action: #selector(onLogin), for: .touchUpInside)
+        button.setTitle("Dismiss Login", for: .normal)
+        button.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
         return button
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = .white
         view.addSubview(loginButton)
         
         NSLayoutConstraint.activate([
@@ -32,7 +32,7 @@ class LoginViewController: ViewControllerCoordinator {
         ])
     }
     
-    @objc private func onLogin() {
-        coordinator?.didSendNavigationEvent(event: LoginNavigationEvent.onLogin)
+    @objc private func dismissView() {
+        coordinator?.didSendNavigationEvent(event: LoginNavigationEvent.dismissLogin)
     }
 }

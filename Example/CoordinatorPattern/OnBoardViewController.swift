@@ -9,21 +9,21 @@
 import UIKit
 import CoordinatorPattern
 
-class OnBoardViewController: ViewControllerCoordinator {
+final class OnBoardViewController: ViewControllerCoordinator {
     
     weak var coordinator: Coordinator?
     
     lazy var logoffButton: UIButton = {
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Logoff", for: .normal)
-        button.addTarget(self, action: #selector(onLogoff), for: .touchUpInside)
+        button.setTitle("Dismiss Onboarding", for: .normal)
+        button.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
         return button
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .blue
+        view.backgroundColor = .white
         view.addSubview(logoffButton)
         
         NSLayoutConstraint.activate([
@@ -32,7 +32,7 @@ class OnBoardViewController: ViewControllerCoordinator {
             ])
     }
     
-    @objc private func onLogoff() {
-        coordinator?.didSendNavigationEvent(event: OnBoardNavigationEvent.onLogoff)
+    @objc private func dismissView() {
+        coordinator?.didSendNavigationEvent(event: OnBoardNavigationEvent.dismissOnBoarding)
     }
 }

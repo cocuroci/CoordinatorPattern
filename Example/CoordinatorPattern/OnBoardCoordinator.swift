@@ -9,13 +9,14 @@
 import CoordinatorPattern
 
 enum OnBoardNavigationEvent: NavigationEvent {
-    case onLogoff
+    case openOnBoarding
+    case dismissOnBoarding
 }
 
 final class OnBoardCoordinator: Coordinator {
     
     private let navigationController: UINavigationController
-    private let window: UIWindow
+    private let presenterViewController: UIViewController
     
     lazy var rootViewController: ViewControllerCoordinator = {
         return OnBoardViewController()
@@ -25,19 +26,15 @@ final class OnBoardCoordinator: Coordinator {
     
     weak var parentCoordinator: Coordinator?
     
-    deinit {
-        debugPrint("OnBoardCoordinator \(#function)")
-    }
-    
-    init(window: UIWindow) {
-        self.window = window
+    init(presenterViewController: UIViewController) {
+        self.presenterViewController = presenterViewController
         self.navigationController = UINavigationController()
     }
     
     func start() {
-        self.navigationController.viewControllers = [self.rootViewController]
-        self.rootViewController.coordinator = self
-        self.window.rootViewController = self.navigationController
+        navigationController.viewControllers = [self.rootViewController]
+        rootViewController.coordinator = self
+        presenterViewController.present(navigationController, animated: true, completion: nil)
     }
     
     func didSendNavigationEvent(event: NavigationEvent) {

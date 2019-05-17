@@ -12,11 +12,11 @@ final class AppCoordinator: Coordinator {
     
     private var window: UIWindow
     
-    var childrenCoordinators: [Coordinator] = [] {
-        didSet {
-            debugPrint(childrenCoordinators)
-        }
-    }
+    var childrenCoordinators: [Coordinator] = [] 
+    
+    lazy var rootViewController: ViewControllerCoordinator = {
+        return MainViewController()
+    }()
     
     weak var parentCoordinator: Coordinator?
     
@@ -25,36 +25,36 @@ final class AppCoordinator: Coordinator {
     }
     
     func start() {
-        let random = Int.random(in: 0...1)
-        
-        if random == 0 {
-            startLoginCoordinator()
-        } else {
-            startOnBoardCoordinator()
-        }
+        rootViewController.coordinator = self
+        window.rootViewController = rootViewController
     }
     
     func didSendNavigationEvent(event: NavigationEvent) {
         switch event {
-        case LoginNavigationEvent.onLogin:
-            startOnBoardCoordinator()
-        case OnBoardNavigationEvent.onLogoff:
+        case LoginNavigationEvent.openLogin:
             startLoginCoordinator()
-        default: ()
+        case OnBoardNavigationEvent.openOnBoarding:
+            startOnBoardCoordinator()
+        default:
+            dismissChildrenCoordinator()
         }
     }
     
     private func startLoginCoordinator() {
-        let loginCoordinator = LoginCoordinator(window: window)
+        let loginCoordinator = LoginCoordinator(presenterViewController: rootViewController)
         childrenCoordinators.append(loginCoordinator)
         loginCoordinator.parentCoordinator = self
         loginCoordinator.start()
     }
     
     private func startOnBoardCoordinator() {
-        let onBoardCoordinator = OnBoardCoordinator(window: window)
+        let onBoardCoordinator = OnBoardCoordinator(presenterViewController: rootViewController)
         childrenCoordinators.append(onBoardCoordinator)
         onBoardCoordinator.parentCoordinator = self
         onBoardCoordinator.start()
+    }
+    
+    private func dismissChildrenCoordinator() {
+        rootViewController.dismiss(animated: true, completion: nil)
     }
 }
